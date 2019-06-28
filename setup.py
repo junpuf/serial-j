@@ -8,7 +8,7 @@ setuptools.setup(
     version='0.1.0',
     author='Junpu Fan',
     author_email='junpufan@me.com ',
-    description=('Serializing JSON data into Python object with minimal effort.'),
+    description='Serializing JSON data into Python object with minimal effort.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/JunpuFan/serial-j',
