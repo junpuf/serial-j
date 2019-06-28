@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name='serial-j-fan163',
+    name='serial-j',
     version='0.0.1',
     author='Junpu Fan',
     author_email='junpufan@me.com ',
