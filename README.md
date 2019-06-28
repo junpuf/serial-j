@@ -40,7 +40,7 @@ test1 = dict(
     pineapple="nice pineapple",
 )
 
-# serialize `data1` into `FruitBucket` object
+# serialize `test1` into `FruitBucket` object
 fruits = FruitBucket(test1)
 
 # `fruits` is a proper python object , which means that you can use 
