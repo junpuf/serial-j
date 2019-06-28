@@ -104,7 +104,8 @@ class SerialJ(object):
                     d[prop_name] = self.__dict__[prop_name].as_dict()
 
             else:
-                d[prop_name] = self.__dict__[prop_name]
+                if prop_name in self.__dict__:
+                    d[prop_name] = self.__dict__[prop_name]
         return d
 
     def __to_str(self):
