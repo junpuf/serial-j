@@ -1,4 +1,4 @@
-name = "serial-j"
+name = "serial_j"
 
 import json
 
