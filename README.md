@@ -88,7 +88,8 @@ class Snack(SerialJ):
             'is_compound': False,
             'compound_serializer': None,
         },
-        # chips is a must but we have to decide which kind later, so its value can be None, False, "", {}, [].
+        # chips is a must but we have to decide which kind later, 
+        # so its value can be None, False, "", {}, [].
         {
             'name': 'chips',
             'optional': False,
