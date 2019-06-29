@@ -51,7 +51,6 @@ class SerialJ(object):
     _sch = 'compound_schema'
 
     def __init__(self, data):
-        self._schema = []
         self._preproc(data)
         self._proc(data)
 
@@ -86,18 +85,15 @@ class SerialJ(object):
                         and not _serializer
                         and not _schema):
                     raise TypeError(self._err(3, _name))
-            _d = {
-                self._na: _name,
-                self._opt: _optional,
-                self._nu: _nullable,
-                self._cp: _compound,
-                self._srl: _serializer,
-                self._sch: _schema,
-            }
-            self._schema.append(_d)
+            prop[self._na] = _name
+            prop[self._opt] = _optional
+            prop[self._nu] = _nullable
+            prop[self._cp] = _compound
+            prop[self._srl] = _serializer
+            prop[self._sch] = _schema
 
     def _proc(self, data):
-        for prop in self._schema:
+        for prop in self.schema:
             _name = prop[self._na]
             if _name in data:
                 if prop[self._cp]:
@@ -132,7 +128,7 @@ class SerialJ(object):
 
     def as_dict(self):
         _d = {}
-        for prop in self._schema:
+        for prop in self.schema:
             _name = prop[self._na]
             if prop[self._cp]:
                 if isinstance(self.__dict__[_name], list):
