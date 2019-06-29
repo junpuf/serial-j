@@ -26,14 +26,16 @@ class SerialJ(object):
 
             {
                 'name': 'property_name',
-                'optional': True / False,
-                'nullable': True / False,
-                'is_compound': True / False,
+                'optional': Optional, True / False,
+                'nullable': Optional, True / False,
+                'is_compound': Optional, True / False,
                 'compound_serializer': Optional, Compound Serializer class,
                 'compound_schema': Optional, `schema` of this property,
             }
-            Note: if is_compound == True, then you must 1 of the 2:
-                `compound_serializer`, or `compound_schema`.
+            Note:
+                if is_compound is True, you must provide 1 of the following:
+                    `compound_serializer`, or `compound_schema` for successful
+                    serialize data.
 
     Args:
         data: dict / JSON formatted data to be serialized.
