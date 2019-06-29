@@ -10,9 +10,9 @@ from serial_j import SerialJ
 class FruitBucket(SerialJ):
     # define how our data should look like using `schema`.
     schema = [
-        {'name': 'apple','optional': False,'nullable': False,'is_compound': False,},
-        {'name': 'orange','optional': False,'nullable': False,'is_compound': False,},
-        {'name': 'pineapple','optional': False,'nullable': False,'is_compound': False,},
+        {'name': 'apple'},
+        {'name': 'orange'},
+        {'name': 'pineapple'},
     ]
 
 # test data for FruitBucket 
@@ -54,20 +54,20 @@ from serial_j import SerialJ
 class Snack(SerialJ):
     schema = [
         # cheese is nice but is optional.
-        {'name': 'cheese','optional': True,'nullable': False,'is_compound': False,},
+        {'name': 'cheese', 'optional': True},
         # chocolate is a MUST have.
-        {'name': 'chocolate','optional': False,'nullable': False,'is_compound': False,},
+        {'name': 'chocolate'},
         # chips is a must but we have to decide which kind later, 
         # so its value can be None, False, "", {}, [].
-        {'name': 'chips','optional': False,'nullable': True,'is_compound': False,},
+        {'name': 'chips', 'nullable': True},
     ]
     
 class NestedBucket(SerialJ):
     schema = [
-        {'name': 'apple','optional': False,'nullable': False,'is_compound': False,},
-        {'name': 'orange','optional': False,'nullable': False,'is_compound': False,},
-        {'name': 'pineapple','optional': False,'nullable': False,'is_compound': False,},
-        {'name': 'snack','optional': False,'nullable': False,'is_compound': True,'compound_serializer': Snack,}
+        {'name': 'apple'},
+        {'name': 'orange'},
+        {'name': 'pineapple'},
+        {'name': 'snack', 'is_compound': True, 'compound_serializer': Snack}
     ]
     
 # test data for NestedBucket
@@ -86,21 +86,21 @@ print(my_snacks)
 >>>  "snack": {"chocolate": "Ferrero Rocher", "chips": []}}
 ```
 
-alternatively, you put them together like this...
+alternatively, you can put them together like this...
 
 ```python
 from serial_j import SerialJ
 
 class SnackBucket(SerialJ):
     schema = [
-        {'name': 'apple', 'optional': False, 'nullable': False, 'is_compound': False,},
-        {'name': 'orange','optional': False, 'nullable': False, 'is_compound': False,},
-        {'name': 'pineapple','optional': False, 'nullable': False, 'is_compound': False,},
-        {'name': 'snack', 'optional': False, 'nullable': False, 'is_compound': True, 
+        {'name': 'apple'},
+        {'name': 'orange'},
+        {'name': 'pineapple'},
+        {'name': 'snack', 'is_compound': True,
             'compound_schema': [
-                {'name': 'cheese','optional': True, 'nullable': False, 'is_compound': False,},
-                {'name': 'chocolate','optional': False,'nullable': False,'is_compound': False,},
-                {'name': 'chips','optional': False,'nullable': True,'is_compound': False,},
+                 {'name': 'cheese', 'optional': True},
+                 {'name': 'chocolate'},
+                 {'name': 'chips', 'nullable': True},
             ],
         },
     ]

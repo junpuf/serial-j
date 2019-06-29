@@ -41,96 +41,112 @@ class SerialJ(object):
 
     schema = []
 
-    def __init__(self, data):
-        self.__check__(data)
-        for prop in self.schema:
-            prop_name = prop['name']
-            prop_is_compound = prop['is_compound']
-            if prop_name in data:
-                if prop_is_compound:
-                    if 'compound_serializer' in prop:
-                        compound_serializer = prop['compound_serializer']
-                        if (isinstance(data[prop_name], list)):
-                            self.__dict__[prop_name] = [
-                                compound_serializer(obj)
-                                for obj in data[prop_name]]
-                        elif (isinstance(data[prop_name], dict)):
-                            self.__dict__[prop_name] = compound_serializer(
-                                data[prop_name])
-                    elif 'compound_schema' in prop:
-                        prop_class = SerialJ
-                        prop_class.schema = prop['compound_schema']
-                        if isinstance(data[prop_name], list):
-                            self.__dict__[prop_name] = [
-                                prop_class(obj)
-                                for obj in data[prop_name]]
-                        elif isinstance(data[prop_name], dict):
-                            self.__dict__[prop_name] = prop_class(
-                                data[prop_name])
-                else:
-                    self.__dict__[prop_name] = data[prop_name]
+    _na = 'name'
+    _opt = 'optional'
+    _nu = 'nullable'
+    _cp = 'is_compound'
+    _srl = 'compound_serializer'
+    _sch = 'compound_schema'
 
-    def __check__(self, data):
+    def __init__(self, data):
+        self._schema = []
+        self._preproc(data)
+        self._proc(data)
+
+    def _preproc(self, data):
         for prop in self.schema:
-            prop_name = prop['name']
-            prop_optional = prop['optional']
-            prop_nullable = prop['nullable']
-            prop_is_compound = prop['is_compound']
-            if prop_optional:
-                if prop_name in data:
-                    if not prop_nullable and not data[prop_name]:
-                        raise ValueError(
-                            f"Property '{prop_name}' is not nullable.")
-                    if (prop_is_compound
-                            and not isinstance(data[prop_name], list)
-                            and not isinstance(data[prop_name], dict)):
-                        raise TypeError(f"Compound Property '{prop_name}' is "
-                                        f"not of type list or dict.")
-                    if (prop_is_compound
-                            and 'compound_serializer' not in prop
-                            and 'compound_schema' not in prop):
-                        raise TypeError(f"Compound Property '{prop_name}' does "
-                                        f"not have a proper serializer "
-                                        f"or schema.")
+            _name = prop[self._na]
+            _optional = prop[self._opt] if self._opt in prop else False
+            _nullable = prop[self._nu] if self._nu in prop else False
+            _compound = prop[self._cp] if self._cp in prop else False
+            _serializer = prop[self._srl] if self._srl in prop else None
+            _schema = prop[self._sch] if self._sch in prop else None
+            if _optional:
+                if _name in data:
+                    if not _nullable and not data[_name]:
+                        raise ValueError(self._err(1, _name))
+                    if (_compound
+                            and not isinstance(data[_name], list)
+                            and not isinstance(data[_name], dict)):
+                        raise TypeError(self._err(2, _name))
+                    if _compound and not _serializer and not _schema:
+                        raise TypeError(self._err(3, _name))
             else:
-                if prop_name not in data:
-                    raise ValueError(f"Property '{prop_name}' not found in "
-                                     f"{data}.")
-                if not prop_nullable and not data[prop_name]:
-                    raise ValueError(f"Property '{prop_name}' is not nullable.")
-                if (prop_is_compound
-                        and not isinstance(data[prop_name], list)
-                        and not isinstance(data[prop_name], dict)):
-                    raise TypeError(f"Compound Property '{prop_name}' is "
-                                    f"not of type list or dict.")
-                if (prop_is_compound
-                        and 'compound_serializer' not in prop
-                        and 'compound_schema' not in prop):
-                    raise TypeError(f"Compound Property '{prop_name}' does "
-                                    f"not have a proper serializer or schema.")
+                if _name not in data:
+                    raise ValueError(self._err(0, _name, data))
+                if not _nullable and not data[_name]:
+                    raise ValueError(self._err(1, _name))
+                if (_compound
+                        and not isinstance(data[_name], list)
+                        and not isinstance(data[_name], dict)):
+                    raise TypeError(self._err(2, _name))
+                if (_compound
+                        and not _serializer
+                        and not _schema):
+                    raise TypeError(self._err(3, _name))
+            _d = {
+                self._na: _name,
+                self._opt: _optional,
+                self._nu: _nullable,
+                self._cp: _compound,
+                self._srl: _serializer,
+                self._sch: _schema,
+            }
+            self._schema.append(_d)
+
+    def _proc(self, data):
+        for prop in self._schema:
+            _name = prop[self._na]
+            if _name in data:
+                if prop[self._cp]:
+                    if prop[self._srl]:
+                        if isinstance(data[_name], list):
+                            self.__dict__[_name] = [prop[self._srl](o)
+                                                    for o in data[_name]]
+                        elif isinstance(data[_name], dict):
+                            self.__dict__[_name] = prop[self._srl](data[_name])
+                    elif prop[self._sch]:
+                        _cls = SerialJ
+                        _cls.schema = prop[self._sch]
+                        if isinstance(data[_name], list):
+                            self.__dict__[_name] = [_cls(o)
+                                                    for o in data[_name]]
+                        elif isinstance(data[_name], dict):
+                            self.__dict__[_name] = _cls(data[_name])
+                else:
+                    self.__dict__[_name] = data[_name]
+
+    @staticmethod
+    def _err(e, _name, data=None):
+        if e == 0:
+            return f"Property '{_name}' not found in {data}."
+        elif e == 1:
+            return f"Property '{_name}' is not nullable."
+        elif e == 2:
+            return f"Compound Property '{_name}' is not of type list or dict."
+        elif e == 3:
+            return (f"Compound Property '{_name}' does not have a proper "
+                    f"serializer or schema.")
 
     def as_dict(self):
-        d = {}
-        for prop in self.schema:
-            prop_name = prop['name']
-            prop_is_compound = prop['is_compound']
-            if prop_is_compound:
-                if (isinstance(self.__dict__[prop_name], list)):
-                    d[prop_name] = [com.as_dict() for com in
-                                    self.__dict__[prop_name]]
+        _d = {}
+        for prop in self._schema:
+            _name = prop[self._na]
+            if prop[self._cp]:
+                if isinstance(self.__dict__[_name], list):
+                    _d[_name] = [cp.as_dict() for cp in self.__dict__[_name]]
                 else:
-                    d[prop_name] = self.__dict__[prop_name].as_dict()
-
+                    _d[_name] = self.__dict__[_name].as_dict()
             else:
-                if prop_name in self.__dict__:
-                    d[prop_name] = self.__dict__[prop_name]
-        return d
+                if _name in self.__dict__:
+                    _d[_name] = self.__dict__[_name]
+        return _d
 
-    def __to_str(self):
+    def _to_str(self):
         return json.dumps(self.as_dict())
 
     def __str__(self) -> str:
-        return self.__to_str()
+        return self._to_str()
 
     def __repr__(self) -> str:
-        return self.__to_str()
+        return self._to_str()
