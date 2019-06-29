@@ -10,27 +10,9 @@ from serial_j import SerialJ
 class FruitBucket(SerialJ):
     # define how our data should look like using `schema`.
     schema = [
-        {
-            'name': 'apple',
-            'optional': False,
-            'nullable': False,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
-        {
-            'name': 'orange',
-            'optional': False,
-            'nullable': False,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
-        {
-            'name': 'pineapple',
-            'optional': False,
-            'nullable': False,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
+        {'name': 'apple','optional': False,'nullable': False,'is_compound': False,},
+        {'name': 'orange','optional': False,'nullable': False,'is_compound': False,},
+        {'name': 'pineapple','optional': False,'nullable': False,'is_compound': False,},
     ]
 
 # test data for FruitBucket 
@@ -69,68 +51,23 @@ But, we can do more than just that. Let's see how we can serialize more complex 
 
 ```python
 from serial_j import SerialJ
-
 class Snack(SerialJ):
     schema = [
         # cheese is nice but is optional.
-        {
-            'name': 'cheese',
-            'optional': True,
-            'nullable': False,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
+        {'name': 'cheese','optional': True,'nullable': False,'is_compound': False,},
         # chocolate is a MUST have.
-        {
-            'name': 'chocolate',
-            'optional': False,
-            'nullable': False,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
+        {'name': 'chocolate','optional': False,'nullable': False,'is_compound': False,},
         # chips is a must but we have to decide which kind later, 
         # so its value can be None, False, "", {}, [].
-        {
-            'name': 'chips',
-            'optional': False,
-            'nullable': True,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
-    
+        {'name': 'chips','optional': False,'nullable': True,'is_compound': False,},
     ]
-
-
+    
 class NestedBucket(SerialJ):
     schema = [
-        {
-            'name': 'apple',
-            'optional': False,
-            'nullable': False,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
-        {
-            'name': 'orange',
-            'optional': False,
-            'nullable': False,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
-        {
-            'name': 'pineapple',
-            'optional': False,
-            'nullable': False,
-            'is_compound': False,
-            'compound_serializer': None,
-        },
-        {
-            'name': 'snack',
-            'optional': False,
-            'nullable': False,
-            'is_compound': True,
-            'compound_serializer': Snack,
-        }
+        {'name': 'apple','optional': False,'nullable': False,'is_compound': False,},
+        {'name': 'orange','optional': False,'nullable': False,'is_compound': False,},
+        {'name': 'pineapple','optional': False,'nullable': False,'is_compound': False,},
+        {'name': 'snack','optional': False,'nullable': False,'is_compound': True,'compound_serializer': Snack,}
     ]
     
 # test data for NestedBucket
@@ -143,10 +80,52 @@ test2 = dict(
         chips=[] # yeah its a list of chips!
     ),
 )
-
 my_snacks = NestedBucket(test2)
 print(my_snacks)
->>> {"apple": "good apple", "orange": "very good orange", "pineapple": "nice pineapple", "snack": {"chocolate": "Ferrero Rocher", "chips": []}}
+>>> {"apple": "good apple", "orange": "very good orange", "pineapple": "nice pineapple", 
+>>>  "snack": {"chocolate": "Ferrero Rocher", "chips": []}}
 ```
 
+alternatively, you put them together like this...
+
+```python
+from serial_j import SerialJ
+
+class SnackBucket(SerialJ):
+    schema = [
+        {'name': 'apple', 'optional': False, 'nullable': False, 'is_compound': False,},
+        {'name': 'orange','optional': False, 'nullable': False, 'is_compound': False,},
+        {'name': 'pineapple','optional': False, 'nullable': False, 'is_compound': False,},
+        {'name': 'snack', 'optional': False, 'nullable': False, 'is_compound': True, 
+            'compound_schema': [
+                {'name': 'cheese','optional': True, 'nullable': False, 'is_compound': False,},
+                {'name': 'chocolate','optional': False,'nullable': False,'is_compound': False,},
+                {'name': 'chips','optional': False,'nullable': True,'is_compound': False,},
+            ],
+        },
+    ]
+
+test3 = dict(
+    apple="good apple",
+    orange="very good orange",
+    pineapple="nice pineapple",
+    snack=[
+        dict(
+            cheese="Feta",
+            chocolate="Ferrero Rocher",
+            chips=[] 
+        ),
+        dict(
+            chocolate="Swiss milk chocolate",
+            chips=["Cheetos", "Lays Classic Potato Chips", "Cool Ranch Doritos"] 
+        ),
+    ]
+)
+mysnacks = SnackBucket(test3)
+print(mysnacks)
+>>> {"apple": "good apple", "orange": "very good orange", "pineapple": "nice pineapple", 
+>>> "snack": [{"cheese": "Feta", "chocolate": "Ferrero Rocher", "chips": []}, 
+>>>           {"chocolate": "Swiss milk chocolate", "chips": 
+>>>                ["Cheetos", "Lays Classic Potato Chips", "Cool Ranch Doritos"]}]}
+```
 ## To be continued...

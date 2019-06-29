@@ -29,8 +29,11 @@ class SerialJ(object):
                 'optional': True / False,
                 'nullable': True / False,
                 'is_compound': True / False,
-                'compound_serializer': None / Serializer Class Name,
+                'compound_serializer': Optional, Compound Serializer class,
+                'compound_schema': Optional, `schema` of this property,
             }
+            Note: if is_compound == True, then you must 1 of the 2:
+                `compound_serializer`, or `compound_schema`.
 
     Args:
         data: dict / JSON formatted data to be serialized.
@@ -43,16 +46,27 @@ class SerialJ(object):
         for prop in self.schema:
             prop_name = prop['name']
             prop_is_compound = prop['is_compound']
-            prop_compound_serializer = prop['compound_serializer']
             if prop_name in data:
                 if prop_is_compound:
-                    if (isinstance(data[prop_name], list)):
-                        self.__dict__[prop_name] = [
-                            prop_compound_serializer(obj)
-                            for obj in data[prop_name]]
-                    elif (isinstance(data[prop_name], dict)):
-                        self.__dict__[prop_name] = prop_compound_serializer(
-                            data[prop_name])
+                    if 'compound_serializer' in prop:
+                        compound_serializer = prop['compound_serializer']
+                        if (isinstance(data[prop_name], list)):
+                            self.__dict__[prop_name] = [
+                                compound_serializer(obj)
+                                for obj in data[prop_name]]
+                        elif (isinstance(data[prop_name], dict)):
+                            self.__dict__[prop_name] = compound_serializer(
+                                data[prop_name])
+                    elif 'compound_schema' in prop:
+                        prop_class = SerialJ
+                        prop_class.schema = prop['compound_schema']
+                        if isinstance(data[prop_name], list):
+                            self.__dict__[prop_name] = [
+                                prop_class(obj)
+                                for obj in data[prop_name]]
+                        elif isinstance(data[prop_name], dict):
+                            self.__dict__[prop_name] = prop_class(
+                                data[prop_name])
                 else:
                     self.__dict__[prop_name] = data[prop_name]
 
@@ -62,7 +76,6 @@ class SerialJ(object):
             prop_optional = prop['optional']
             prop_nullable = prop['nullable']
             prop_is_compound = prop['is_compound']
-            prop_compound_serializer = prop['compound_serializer']
             if prop_optional:
                 if prop_name in data:
                     if not prop_nullable and not data[prop_name]:
@@ -73,9 +86,12 @@ class SerialJ(object):
                             and not isinstance(data[prop_name], dict)):
                         raise TypeError(f"Compound Property '{prop_name}' is "
                                         f"not of type list or dict.")
-                    if prop_is_compound and prop_compound_serializer is None:
+                    if (prop_is_compound
+                            and 'compound_serializer' not in prop
+                            and 'compound_schema' not in prop):
                         raise TypeError(f"Compound Property '{prop_name}' does "
-                                        f"not have a proper serializer.")
+                                        f"not have a proper serializer "
+                                        f"or schema.")
             else:
                 if prop_name not in data:
                     raise ValueError(f"Property '{prop_name}' not found in "
@@ -87,9 +103,11 @@ class SerialJ(object):
                         and not isinstance(data[prop_name], dict)):
                     raise TypeError(f"Compound Property '{prop_name}' is "
                                     f"not of type list or dict.")
-                if prop_is_compound and prop_compound_serializer is None:
+                if (prop_is_compound
+                        and 'compound_serializer' not in prop
+                        and 'compound_schema' not in prop):
                     raise TypeError(f"Compound Property '{prop_name}' does "
-                                    f"not have a proper serializer.")
+                                    f"not have a proper serializer or schema.")
 
     def as_dict(self):
         d = {}
