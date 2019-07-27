@@ -31,7 +31,7 @@ class SerialJ(object):
 
             {
                 'name': 'property_name',
-                'type': Optional,
+                'type': Optional tuple,
                 'optional': Optional, True / False,
                 'nullable': Optional, True / False,
                 'is_compound': Optional, True / False,
