@@ -1,6 +1,11 @@
-name = "serial_j"
-
 import json
+
+from types import LambdaType
+
+from serial_j.hp import _err, _valid_ipv4, _valid_ipv6, _valid_regex, \
+    _valid_uuid, _valid_email, _valid_url, _regex_match
+
+name = "serial_j"
 
 
 class SerialJ(object):
@@ -26,6 +31,7 @@ class SerialJ(object):
 
             {
                 'name': 'property_name',
+                'type': Optional,
                 'optional': Optional, True / False,
                 'nullable': Optional, True / False,
                 'is_compound': Optional, True / False,
@@ -44,19 +50,82 @@ class SerialJ(object):
     schema = []
 
     _na = 'name'
+    _tp = 'type'
     _opt = 'optional'
     _nu = 'nullable'
     _cp = 'is_compound'
     _srl = 'compound_serializer'
     _sch = 'compound_schema'
 
+    _spbtps = (int, float, bool, str)
+
+    _spsstps = dict(
+        uuid=_valid_uuid,
+        ipv4=_valid_ipv4,
+        ipv6=_valid_ipv6,
+        email=_valid_email,
+        url=_valid_url
+    )
+
     def __init__(self, data):
         self._preproc(data)
         self._proc(data)
 
+    def _valid_type(self, _type):
+        if isinstance(_type, tuple) and len(_type) == 2:
+            mt = _type[0]
+            st = _type[1]
+            if mt not in self._spbtps:
+                return False
+            if (mt == int and not isinstance(st, tuple)
+                    and not isinstance(st, range)
+                    and not isinstance(st, LambdaType)):
+                return False
+            if mt == int and isinstance(st, tuple):
+                for e in st:
+                    if not isinstance(e, int):
+                        return False
+            if (mt == str and not isinstance(st, tuple)
+                    and st not in self._spsstps.keys()
+                    and not _valid_regex(st)):
+                return False
+            if mt == str and isinstance(st, tuple):
+                for e in st:
+                    if not isinstance(e, str):
+                        return False
+            return True
+        elif isinstance(_type, tuple) and len(_type) == 1:
+            mt = _type[0]
+            if mt not in self._spbtps:
+                return False
+            return True
+        else:
+            return False
+
+    def _validated(self, _type, data):
+        if isinstance(_type, tuple) and len(_type) == 2:
+            mt = _type[0]
+            st = _type[1]
+            if mt == int and (isinstance(st, tuple) or isinstance(st, range)):
+                return data in st
+            elif mt == int and isinstance(st, LambdaType):
+                return st(data)
+            elif mt == str and isinstance(st, tuple):
+                return data in st
+            elif mt == str and st in self._spsstps.keys():
+                return self._spsstps[st](data)
+            else:
+                return _regex_match(regex=st, _str=data)
+        elif isinstance(_type, tuple) and len(_type) == 1:
+            mt = _type[0]
+            return isinstance(data, mt)
+        else:
+            return False
+
     def _preproc(self, data):
         for prop in self.schema:
             _name = prop[self._na]
+            _type = prop[self._tp] if self._tp in prop else None
             _optional = prop[self._opt] if self._opt in prop else False
             _nullable = prop[self._nu] if self._nu in prop else False
             _compound = prop[self._cp] if self._cp in prop else False
@@ -65,27 +134,37 @@ class SerialJ(object):
             if _optional:
                 if _name in data:
                     if not _nullable and not data[_name]:
-                        raise ValueError(self._err(1, _name))
+                        raise ValueError(_err(1, _name))
+                    if _type and not self._valid_type(_type):
+                        raise TypeError(_err(5, _name, _type))
+                    if _type and not self._validated(_type, data[_name]):
+                        raise ValueError(
+                            _err(4, _name, _type, data[_name]))
                     if (_compound
                             and not isinstance(data[_name], list)
                             and not isinstance(data[_name], dict)):
-                        raise TypeError(self._err(2, _name))
+                        raise TypeError(_err(2, _name))
                     if _compound and not _serializer and not _schema:
-                        raise TypeError(self._err(3, _name))
+                        raise TypeError(_err(3, _name))
             else:
                 if _name not in data:
-                    raise ValueError(self._err(0, _name, data))
+                    raise ValueError(_err(0, _name, data))
                 if not _nullable and not data[_name]:
-                    raise ValueError(self._err(1, _name))
+                    raise ValueError(_err(1, _name))
+                if _type and not self._valid_type(_type):
+                    raise TypeError(_err(5, _name, _type))
+                if _type and not self._validated(_type, data[_name]):
+                    raise ValueError(_err(4, _name, _type, data[_name]))
                 if (_compound
                         and not isinstance(data[_name], list)
                         and not isinstance(data[_name], dict)):
-                    raise TypeError(self._err(2, _name))
+                    raise TypeError(_err(2, _name))
                 if (_compound
                         and not _serializer
                         and not _schema):
-                    raise TypeError(self._err(3, _name))
+                    raise TypeError(_err(3, _name))
             prop[self._na] = _name
+            prop[self._tp] = _type
             prop[self._opt] = _optional
             prop[self._nu] = _nullable
             prop[self._cp] = _compound
@@ -113,18 +192,6 @@ class SerialJ(object):
                             self.__dict__[_name] = _cls(data[_name])
                 else:
                     self.__dict__[_name] = data[_name]
-
-    @staticmethod
-    def _err(e, _name, data=None):
-        if e == 0:
-            return f"Property '{_name}' not found in {data}."
-        elif e == 1:
-            return f"Property '{_name}' is not nullable."
-        elif e == 2:
-            return f"Compound Property '{_name}' is not of type list or dict."
-        elif e == 3:
-            return (f"Compound Property '{_name}' does not have a proper "
-                    f"serializer or schema.")
 
     def as_dict(self):
         _d = {}

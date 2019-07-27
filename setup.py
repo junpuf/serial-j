@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='serial-j',
-    version='0.1.3',
+    version='1.0.0',
     author='Junpu Fan',
     author_email='junpufan@me.com ',
     description='Serializing JSON data into Python object with minimal effort.',
