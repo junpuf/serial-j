@@ -1,5 +1,6 @@
 from serial_j import SerialJ
 
+
 class TypedData(SerialJ):
     schema = [
         {'name': 'prop1', 'type': (int,)},
@@ -18,6 +19,7 @@ class TypedData(SerialJ):
         {'name': 'prop14', 'type': (bool,)},
     ]
 
+
 test1 = {
     'prop1': 1,
     'prop2': 64,
@@ -25,8 +27,8 @@ test1 = {
     'prop4': 2,
     'prop5': "str",
     'prop6': 'SUCCESS',
-    'prop7': 'junpufan@me.com',
-    'prop8': 'https://www.programiz.com/python-programming/methods/built-in/filter',
+    'prop7': 'anyone@emailservice.com',
+    'prop8': 'https://www.something.com/something-something/something/12345',
     'prop9': '172.16.255.1',
     'prop10': '2001:0db8:0a0b:12f0:0000:0000:0000:0001',
     'prop11': 'c026dd66-86f2-498e-8c2c-858179c0c93d',
@@ -37,3 +39,9 @@ test1 = {
 
 data1 = TypedData(test1)
 print(data1)
+# >>> {"prop1": 1, "prop2": 64, "prop3": 4, "prop4": 2, "prop5": "str",
+# >>> "prop6": "SUCCESS", "prop7": "anyone@emailservice.com",
+# >>> "prop8": "https://www.something.com/something-something/something/12345",
+# >>> "prop9": "172.16.255.1", "prop10": "2001:0db8:0a0b:12f0:0000:0000:0000:0001",
+# >>> "prop11": "c026dd66-86f2-498e-8c2c-858179c0c93d", "prop12": "junpufan@me.com",
+# >>> "prop13": 0.1, "prop14": true}

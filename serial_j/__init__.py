@@ -21,6 +21,8 @@ class SerialJ(object):
 
     _spbtps = (int, float, bool, str)
 
+    _empt = (None, "", (), [], {})
+
     _spsstps = dict(
         uuid=_valid_uuid,
         ipv4=_valid_ipv4,
@@ -95,7 +97,7 @@ class SerialJ(object):
             _schema = prop[self._sch] if self._sch in prop else None
             if _optional:
                 if _name in data:
-                    if not _nullable and not data[_name]:
+                    if not _nullable and data[_name] in self._empt:
                         raise ValueError(_err(1, _name))
                     if _type and not self._valid_type(_type):
                         raise TypeError(_err(5, _name, _type))
@@ -111,7 +113,7 @@ class SerialJ(object):
             else:
                 if _name not in data:
                     raise ValueError(_err(0, _name, data))
-                if not _nullable and not data[_name]:
+                if not _nullable and data[_name] in self._empt:
                     raise ValueError(_err(1, _name))
                 if _type and not self._valid_type(_type):
                     raise TypeError(_err(5, _name, _type))

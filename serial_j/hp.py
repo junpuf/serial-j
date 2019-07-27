@@ -2,7 +2,7 @@ import re
 import socket
 import uuid
 
-email_regex = "[^@]+@[^@]+\.[^@]+"
+email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 url_regex = (f"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F]"
              f"[0-9a-fA-F]))+")
 
