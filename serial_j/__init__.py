@@ -9,44 +9,6 @@ name = "serial_j"
 
 
 class SerialJ(object):
-    """YOU SHOULD NOT BE INSTANTIATING THIS CLASS. TO BE EXTENDED ONLY.
-
-
-    This class implement both __str__() and __repr__() method for proper
-    conversion to string data type. Also, as_dict() method was provided for
-    conversion to python dictionary data type.
-
-    At instantiation time, constructor checks all required fields and raise
-
-        1.`ValueError` when required fields are not provided fully.
-
-        2.`TypeError` when data type confirmation failed.
-
-    Any serializer class extending this class must override the class
-    attribute `schema` that confirms the following rules:
-
-        1. Class attribute `schema` must be a list of dict data type.
-
-        2. Every dict in `schema` must have the following format:
-
-            {
-                'name': 'property_name',
-                'type': Optional tuple,
-                'optional': Optional, True / False,
-                'nullable': Optional, True / False,
-                'is_compound': Optional, True / False,
-                'compound_serializer': Optional, Compound Serializer class,
-                'compound_schema': Optional, `schema` of this property,
-            }
-            Note:
-                if is_compound is True, you must provide 1 of the following:
-                    `compound_serializer`, or `compound_schema` for successful
-                    serialize data.
-
-    Args:
-        data: dict / JSON formatted data to be serialized.
-    """
-
     schema = []
 
     _na = 'name'
