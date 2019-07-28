@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='serial-j',
-    version='1.0.1',
+    version='1.0.2',
     author='Junpu Fan',
     author_email='junpufan@me.com ',
-    description='Serializing and Validating JSON data into Python object with minimal effort.',
+    description='Validating and Serializing JSON data into Python object with minimal effort.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/JunpuFan/serial-j',

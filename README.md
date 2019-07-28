@@ -1,5 +1,5 @@
 # Serial-J 
-Serializing and Validating JSON data into Python object with minimal effort. 
+Validating and Serializing JSON data into Python object with minimal effort. 
 
 ## Features 
    1. Serialize JSON / Python Dictionary data into Python object based on a compact data `schema`.
