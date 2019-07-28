@@ -23,10 +23,10 @@ Validating and Serializing JSON data into Python object with minimal effort.
              2. `'type': (float,)` a floating point number.
              3. `'type': (int,)` an integer.
              4. `'type': (int, (1, 64, 343))` an enumeration of integers, this means that the value of a `JSON` property should be in `(1, 64, 343)`.
-             5. `'type': (int, range(1, 10, 3)`, a ranged of integers, this means that the value of a `JSON` property should be in `range(1, 10, 3)`.
+             5. `'type': (int, range(1, 10, 3)`, a range of integers, this means that the value of a `JSON` property should be in `range(1, 10, 3)`.
              6. `'type': (int, lambda x: x % 2 == 0)` a user defined `lambda` expression used to filter desired integer values, the above example `lambda`  specifies the value of the `JSON` property should be a `even` number.
              7. `'type': (str,)` a string value.
-             8. `'type': (str, ('SUCCESS', 'FAILURE'))` an enumeration of strings, this means that the value of a `JSON` property should be in `('SUCCESS', 'FAILURE')`.
+             8. `'type': (str, ('SUCCESS', 'FAILURE'))` an enumeration of strings, this means that the value of a `JSON` property should be in `('SUCCESS', 'FAILURE')`. Note that `('SUCCESS', 'FAILURE')` is just an example here, you can define anything you like.
              9. `'type': (str, 'email')` an email address.
              10. `'type': (str, 'url')` a web url.
              11. `'type': (str, 'ipv4')` an IPv4 address.
