@@ -1,4 +1,4 @@
-[![Serial-J](https://github.com/JunpuFan/static/blob/master/logo.png)
+![Serial-J](https://github.com/JunpuFan/static/blob/master/logo.png)
 
 ![Demo](https://github.com/JunpuFan/static/blob/master/demo1.gif)
 
