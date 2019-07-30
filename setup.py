@@ -5,7 +5,7 @@ with open("Pypi.md", "r") as fh:
 
 setuptools.setup(
     name='serial-j',
-    version='1.0.8',
+    version='1.0.9',
     author='Junpu Fan',
     author_email='junpufan@me.com ',
     description='Validating and Serializing JSON data into Python object with minimal effort.',
