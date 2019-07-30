@@ -1,6 +1,8 @@
 ![Serial-J](https://github.com/JunpuFan/static/blob/master/logo.png)
 
-![Demo](https://github.com/JunpuFan/static/blob/master/demo1.gif)
+<p align="center">
+  <img width="620" height="422" src="https://github.com/JunpuFan/static/blob/master/demo1.gif">
+</p>
 
 ## Features 
    1. Serialize JSON / Python Dictionary data into Python object based on a compact data `schema`.
