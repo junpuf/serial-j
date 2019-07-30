@@ -10,7 +10,7 @@ Validating and Serializing JSON data into Python object with minimal effort.
           2. Its value **MUST** be a **non-empty** value. 
           3. Non-empty means that the value of  `my_property` can not be `None`, `""`, `()`, `[]`, or `{}`.
        4. Additional options are available to give you more control over your data definition. Those options are: `nullable`, `optional`, `is_compound`, `compound_serializer`, `compound_schema` and `type`.
-          1. Option `nullable: True` means the value of `my_property` can be `None`, `""`, `()`, `[]`,  or `{}`.
+          1. Option `nullable: True` means the value of `my_property` can be `None`.
           2. Option `optional: True` means `my_property` may or may not exist in your `JSON` data.
              1. In case `my_property` exist, verify all applicable options.
              2. In case `my_property` doesn't exist, we ignore `my_property`.
