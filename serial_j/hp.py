@@ -43,6 +43,8 @@ def _valid_ipv6(_str):
 
 
 def _valid_uuid(_str):
+    if isinstance(_str, uuid.UUID):
+        return True
     try:
         uuid.UUID(_str)
         return True
