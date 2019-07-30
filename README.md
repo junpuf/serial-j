@@ -1,5 +1,7 @@
 [![Serial-J](https://github.com/JunpuFan/serial-j/blob/master/static/logo.png)](https://pypi.org/project/serial-j/)
 
+![Demo](https://github.com/JunpuFan/serial-j/blob/master/static/demo1.gif)
+
 ## Features 
    1. Serialize JSON / Python Dictionary data into Python object based on a compact data `schema`.
        1. Data `schema` is a python list `[]` of many `{}`.
