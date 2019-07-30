@@ -1,11 +1,11 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("Pypi.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name='serial-j',
-    version='1.0.6',
+    version='1.0.8',
     author='Junpu Fan',
     author_email='junpufan@me.com ',
     description='Validating and Serializing JSON data into Python object with minimal effort.',
