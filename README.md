@@ -36,9 +36,9 @@
              12. `'type': (str, 'ipv6')` an IPv6 address.
              13. `'type': (str, 'uuid')` an UUID string.
              14. `'type': (str, '[^@]+@[^@]+\.[^@]+')` a user defined `regex`. 
-   2. Automatically validate every JSON properties defined in the `schema` based on varies additiona options specified above.
-   3. You are given convenient built-in methods that you can use to convert your data back to JSON encoded string or JSON/ Python Dictionary.
-   4. You have the flexibility of defining additional methods in your `SerialJ` serializer class that utilize your `JSON` data in anyway you want.
+   2. Automatically validate every JSON properties defined in the `schema` based on varies additional options specified in `schema`.
+   3. You are given convenient built-in methods that you can use to convert your data back to JSON encoded string or JSON / Python Dictionary.
+   4. You have the flexibility of defining additional methods in your serializer class that utilize your data in anyway you want.
 
 
 
