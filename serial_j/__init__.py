@@ -1,5 +1,4 @@
 import json
-
 from types import LambdaType
 
 from serial_j.hp import _err, _valid_ipv4, _valid_ipv6, _valid_regex, \
@@ -100,18 +99,17 @@ class SerialJ(object):
             if not _optional and _name not in data:
                 raise ValueError(_err(0, _name, data))
             if _name in data:
-                if not _nullable and data[_name] in self._empt:
-                    raise ValueError(_err(1, _name))
-                if _type and not self._validated(_type, data[_name]):
-                    if _nullable and data[_name] == None:
-                        pass
-                    else:
+                if data[_name] in self._empt:
+                    if not _nullable:
+                        raise ValueError(_err(1, _name))
+                else:
+                    if _type and not self._validated(_type, data[_name]):
                         raise ValueError(_err(4, _name, _type, data[_name]))
-                if (_compound and not isinstance(data[_name], list)
-                        and not isinstance(data[_name], dict)):
-                    raise TypeError(_err(2, _name))
-                if _compound and not _serializer and not _schema:
-                    raise TypeError(_err(3, _name))
+                    if (_compound and not isinstance(data[_name], list)
+                            and not isinstance(data[_name], dict)):
+                        raise TypeError(_err(2, _name))
+                    if _compound and not _serializer and not _schema:
+                        raise TypeError(_err(3, _name))
             prop[self._na] = _name
             prop[self._tp] = _type
             prop[self._opt] = _optional
