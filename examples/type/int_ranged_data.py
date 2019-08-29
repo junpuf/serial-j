@@ -18,8 +18,6 @@ print(valid_data)
 # >>> {"prop3": 7}
 
 invalid_data = IntRangedData({'prop3': 2})
-print(invalid_data)
 # >>> ValueError: Property: 'prop3' with Value: '2' does not confirm with Type: (<class 'int'>, range(1, 10, 3)).
 invalid_data = IntRangedData({'prop3': 10})
-print(invalid_data)
 # >>> ValueError: Property: 'prop3' with Value: '10' does not confirm with Type: (<class 'int'>, range(1, 10, 3)).

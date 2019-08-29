@@ -5,7 +5,6 @@ import uuid
 email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 url_regex = (f"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F]"
              f"[0-9a-fA-F]))+")
-
 email_pattern = re.compile(email_regex)
 url_pattern = re.compile(url_regex)
 
@@ -75,3 +74,12 @@ def _err(e, _name, _type=None, data=None):
                 f"with Type: {str(_type)}.")
     elif e == 5:
         return f"Type: {str(_type)} for property '{_name}' is not valid."
+
+
+_spsstps = dict(
+    uuid=_valid_uuid,
+    ipv4=_valid_ipv4,
+    ipv6=_valid_ipv6,
+    email=_valid_email,
+    url=_valid_url
+)

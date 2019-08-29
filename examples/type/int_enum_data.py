@@ -18,8 +18,6 @@ print(valid_data)
 # >>> {"prop1": 343}
 
 invalid_data = IntEnumerationData({'prop2': "1"})
-print(invalid_data)
 # >>> ValueError: Property: 'prop2' with Value: '1' does not confirm with Type: (<class 'int'>, (1, 64, 343)).
 invalid_data = IntEnumerationData({'prop2': 2})
-print(invalid_data)
 # >>> ValueError: Property: 'prop2' with Value: '2' does not confirm with Type: (<class 'int'>, (1, 64, 343)).

@@ -12,5 +12,4 @@ print(valid_data)
 # >>> {"prop4": 2}
 
 invalid_data = IntLambdaData({'prop4': 1})
-print(valid_data)
 # >>> ValueError: Property: 'prop4' with Value: '1' does not confirm with Type: (<class 'int'>, <function IntLambdaData.<lambda> at 0x104af6e18>).

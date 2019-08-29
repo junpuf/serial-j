@@ -15,8 +15,6 @@ print(valid_data)
 # >>> {"prop1": "FAILURE"}
 
 invalid_data = StrEnumerationData({'prop1': "HELLO WORLD"})
-print(invalid_data)
 # >>> ValueError: Property: 'prop1' with Value: 'HELLO WORLD' does not confirm with Type: (<class 'str'>, ('SUCCESS', 'FAILURE')).
 invalid_data = StrEnumerationData({'prop1': 1})
-print(invalid_data)
 # >>> ValueError: Property: 'prop1' with Value: '1' does not confirm with Type: (<class 'str'>, ('SUCCESS', 'FAILURE')).
