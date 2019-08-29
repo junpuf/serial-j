@@ -20,6 +20,7 @@ def create_schema(schema=None):
                     raise TypeError(_err(12))
                 else:
                     keys = p.keys()
+                    name = p.get(_na)
                     for opt in keys:
                         if opt not in _spopts:
                             raise TypeError(_err(9, opt))
@@ -35,9 +36,11 @@ def create_schema(schema=None):
                             elif _sch in keys:
                                 validate_schema(p.get(_sch))
                         elif opt == _opt and not isinstance(p.get(_opt), bool):
-                            raise TypeError(_err(14, opt=_opt, _type=bool))
+                            raise TypeError(
+                                _err(14, _name=name, opt=_opt, _type=bool))
                         elif opt == _nu and not isinstance(p.get(_nu), bool):
-                            raise TypeError(_err(14, opt=_nu, _type=bool))
+                            raise TypeError(
+                                _err(14, _name=name, opt=_nu, _type=bool))
 
     validate_schema(schema)
     return schema

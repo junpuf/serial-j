@@ -159,4 +159,4 @@ def _err(e, _name=None, _type=None, data=None, opt=None):
         return (f"You should not be providing both `compound_serializer` "
                 f"and `compound_schema`.")
     elif e == 14:
-        return (f"option: `{opt}` should be of type {_type}")
+        return (f"Property `{_name}` option `{opt}` should be of type {_type}")
