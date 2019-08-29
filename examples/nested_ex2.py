@@ -20,6 +20,9 @@ test3 = dict(
     apple="good apple",
     orange="very good orange",
     pineapple="nice pineapple",
+    banana1="banana",
+    banana2="banana",
+    banana3="banana",
     snack=[
         dict(
             cheese="Feta",
@@ -30,7 +33,10 @@ test3 = dict(
             chocolate="Swiss milk chocolate",
             chips=["Cheetos", "Lays Classic Potato Chips", "Cool Ranch Doritos"]
         ),
-    ]
+    ],
+    snack1 = [],
+    snack2 = [],
+
 )
 mysnacks = SnackBucket(test3)
 print(mysnacks)
