@@ -1,8 +1,9 @@
 import json
 from types import LambdaType
-
-from serial_j.hp import _err, _valid_ipv4, _valid_ipv6, _valid_regex, \
-    _valid_uuid, _valid_email, _valid_url, _regex_match, uuid
+from uuid import UUID
+from serial_j.hp import _valid_regex, _regex_match, _err, _spsstps
+from serial_j.const import _spbtps, _na, _nu, _tp, _opt, _cp, _srl, \
+    _sch, _empt
 
 name = "serial_j"
 
@@ -10,35 +11,16 @@ name = "serial_j"
 class SerialJ(object):
     schema = []
 
-    _na = 'name'
-    _tp = 'type'
-    _opt = 'optional'
-    _nu = 'nullable'
-    _cp = 'is_compound'
-    _srl = 'compound_serializer'
-    _sch = 'compound_schema'
-
-    _spbtps = (int, float, bool, str)
-
-    _empt = (None, "", (), [], {})
-
-    _spsstps = dict(
-        uuid=_valid_uuid,
-        ipv4=_valid_ipv4,
-        ipv6=_valid_ipv6,
-        email=_valid_email,
-        url=_valid_url
-    )
-
     def __init__(self, data):
         self._preproc(data)
         self._proc(data)
 
-    def _valid_type(self, _type):
+    @staticmethod
+    def _valid_type(_type):
         if isinstance(_type, tuple) and len(_type) == 2:
             mt = _type[0]
             st = _type[1]
-            if mt not in self._spbtps:
+            if mt not in _spbtps:
                 return False
             if (mt == int and not isinstance(st, tuple)
                     and not isinstance(st, range)
@@ -49,7 +31,7 @@ class SerialJ(object):
                     if not isinstance(e, int):
                         return False
             if (mt == str and not isinstance(st, tuple)
-                    and st not in self._spsstps.keys()
+                    and st not in _spsstps.keys()
                     and not _valid_regex(st)):
                 return False
             if mt == str and isinstance(st, tuple):
@@ -59,13 +41,14 @@ class SerialJ(object):
             return True
         elif isinstance(_type, tuple) and len(_type) == 1:
             mt = _type[0]
-            if mt not in self._spbtps:
+            if mt not in _spbtps:
                 return False
             return True
         else:
             return False
 
-    def _validated(self, _type, data):
+    @staticmethod
+    def _validated(_type, data):
         if isinstance(_type, tuple) and len(_type) == 2:
             mt = _type[0]
             st = _type[1]
@@ -75,8 +58,8 @@ class SerialJ(object):
                 return st(data)
             elif mt == str and isinstance(st, tuple):
                 return data in st
-            elif mt == str and st in self._spsstps.keys():
-                return self._spsstps[st](data)
+            elif mt == str and st in _spsstps.keys():
+                return _spsstps[st](data)
             else:
                 return _regex_match(regex=st, _str=data)
         elif isinstance(_type, tuple) and len(_type) == 1:
@@ -87,19 +70,19 @@ class SerialJ(object):
 
     def _preproc(self, data):
         for prop in self.schema:
-            _name = prop[self._na]
-            _type = prop[self._tp] if self._tp in prop else None
-            _optional = prop[self._opt] if self._opt in prop else False
-            _nullable = prop[self._nu] if self._nu in prop else False
-            _compound = prop[self._cp] if self._cp in prop else False
-            _serializer = prop[self._srl] if self._srl in prop else None
-            _schema = prop[self._sch] if self._sch in prop else None
+            _name = prop[_na]
+            _type = prop[_tp] if _tp in prop else None
+            _optional = prop[_opt] if _opt in prop else False
+            _nullable = prop[_nu] if _nu in prop else False
+            _compound = prop[_cp] if _cp in prop else False
+            _serializer = prop[_srl] if _srl in prop else None
+            _schema = prop[_sch] if _sch in prop else None
             if _type and not self._valid_type(_type):
                 raise TypeError(_err(5, _name, _type))
             if not _optional and _name not in data:
                 raise ValueError(_err(0, _name, data))
             if _name in data:
-                if data[_name] in self._empt:
+                if data[_name] in _empt:
                     if not _nullable:
                         raise ValueError(_err(1, _name))
                 else:
@@ -110,35 +93,35 @@ class SerialJ(object):
                         raise TypeError(_err(2, _name))
                     if _compound and not _serializer and not _schema:
                         raise TypeError(_err(3, _name))
-            prop[self._na] = _name
-            prop[self._tp] = _type
-            prop[self._opt] = _optional
-            prop[self._nu] = _nullable
-            prop[self._cp] = _compound
-            prop[self._srl] = _serializer
-            prop[self._sch] = _schema
+            prop[_na] = _name
+            prop[_tp] = _type
+            prop[_opt] = _optional
+            prop[_nu] = _nullable
+            prop[_cp] = _compound
+            prop[_srl] = _serializer
+            prop[_sch] = _schema
 
     def _proc(self, data):
         for prop in self.schema:
-            _name = prop[self._na]
+            _name = prop[_na]
             if _name in data:
-                if prop[self._cp]:
-                    if prop[self._srl]:
+                if prop[_cp]:
+                    if prop[_srl]:
                         if isinstance(data[_name], list):
-                            self.__dict__[_name] = [prop[self._srl](o)
+                            self.__dict__[_name] = [prop[_srl](o)
                                                     for o in data[_name]]
                         elif isinstance(data[_name], dict):
-                            self.__dict__[_name] = prop[self._srl](data[_name])
-                    elif prop[self._sch]:
+                            self.__dict__[_name] = prop[_srl](data[_name])
+                    elif prop[_sch]:
                         _cls = SerialJ
-                        _cls.schema = prop[self._sch]
+                        _cls.schema = prop[_sch]
                         if isinstance(data[_name], list):
                             self.__dict__[_name] = [_cls(o)
                                                     for o in data[_name]]
                         elif isinstance(data[_name], dict):
                             self.__dict__[_name] = _cls(data[_name])
                 else:
-                    if isinstance(data[_name], uuid.UUID):
+                    if isinstance(data[_name], UUID):
                         self.__dict__[_name] = str(data[_name])
                     else:
                         self.__dict__[_name] = data[_name]
@@ -146,8 +129,8 @@ class SerialJ(object):
     def as_dict(self):
         _d = {}
         for prop in self.schema:
-            _name = prop[self._na]
-            if prop[self._cp]:
+            _name = prop[_na]
+            if prop[_cp]:
                 if isinstance(self.__dict__[_name], list):
                     _d[_name] = [cp.as_dict() for cp in self.__dict__[_name]]
                 else:
