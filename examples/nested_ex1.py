@@ -1,8 +1,8 @@
-from serial_j import SerialJ
+from serial_j import SerialJ, create_schema
 
 
 class Snack(SerialJ):
-    schema = [
+    schema = create_schema([
         # cheese is nice but is optional.
         {'name': 'cheese', 'optional': True},
         # chocolate is a MUST have.
@@ -10,16 +10,16 @@ class Snack(SerialJ):
         # chips is a must but we have to decide which kind later,
         # so its value can be None, False, "", {}, [].
         {'name': 'chips', 'nullable': True},
-    ]
+    ])
 
 
 class NestedBucket(SerialJ):
-    schema = [
+    schema = create_schema([
         {'name': 'apple'},
         {'name': 'orange'},
         {'name': 'pineapple'},
         {'name': 'snack', 'is_compound': True, 'compound_serializer': Snack}
-    ]
+    ])
 
 
 # test data for NestedBucket

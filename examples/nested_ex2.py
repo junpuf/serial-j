@@ -1,8 +1,8 @@
-from serial_j import SerialJ
+from serial_j import SerialJ, create_schema
 
 
 class SnackBucket(SerialJ):
-    schema = [
+    schema = create_schema([
         {'name': 'apple'},
         {'name': 'orange'},
         {'name': 'pineapple'},
@@ -13,7 +13,7 @@ class SnackBucket(SerialJ):
              {'name': 'chips', 'nullable': True},
          ],
          },
-    ]
+    ])
 
 
 test3 = dict(
@@ -34,8 +34,8 @@ test3 = dict(
             chips=["Cheetos", "Lays Classic Potato Chips", "Cool Ranch Doritos"]
         ),
     ],
-    snack1 = [],
-    snack2 = [],
+    snack1=[],
+    snack2=[],
 
 )
 mysnacks = SnackBucket(test3)

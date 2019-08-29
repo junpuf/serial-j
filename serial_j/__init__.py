@@ -1,11 +1,46 @@
 import json
-from types import LambdaType
 from uuid import UUID
-from serial_j.hp import _valid_regex, _regex_match, _err, _spsstps
+
 from serial_j.const import _spbtps, _na, _nu, _tp, _opt, _cp, _srl, \
-    _sch, _empt
+    _sch, _empt, _spopts
+from serial_j.hp import _err, _spsstps, _valid_type, _valid_regex, _validated
 
 name = "serial_j"
+
+
+def create_schema(schema=None):
+    def validate_schema(schema):
+        if schema is None or not isinstance(schema, list):
+            raise TypeError(_err(7))
+        else:
+            for p in schema:
+                if not isinstance(p, dict):
+                    raise TypeError(_err(8))
+                elif _na not in p.keys():
+                    raise TypeError(_err(12))
+                else:
+                    keys = p.keys()
+                    for opt in keys:
+                        if opt not in _spopts:
+                            raise TypeError(_err(9, opt))
+                        elif opt == _tp and not _valid_type(p.get(_tp)):
+                            raise TypeError(_err(10, p.get(_tp)))
+                        elif opt == _cp and p.get(_cp):
+                            if not _srl in keys and not _sch in keys:
+                                raise TypeError(_err(11))
+                            elif _srl in keys and _sch in keys:
+                                raise TypeError(_err(13))
+                            elif _srl in keys:
+                                validate_schema(p.get(_srl).schema)
+                            elif _sch in keys:
+                                validate_schema(p.get(_sch))
+                        elif opt == _opt and not isinstance(p.get(_opt), bool):
+                            raise TypeError(_err(14, opt=_opt, _type=bool))
+                        elif opt == _nu and not isinstance(p.get(_nu), bool):
+                            raise TypeError(_err(14, opt=_nu, _type=bool))
+
+    validate_schema(schema)
+    return schema
 
 
 class SerialJ(object):
@@ -14,59 +49,6 @@ class SerialJ(object):
     def __init__(self, data):
         self._preproc(data)
         self._proc(data)
-
-    @staticmethod
-    def _valid_type(_type):
-        if isinstance(_type, tuple) and len(_type) == 2:
-            mt = _type[0]
-            st = _type[1]
-            if mt not in _spbtps:
-                return False
-            if (mt == int and not isinstance(st, tuple)
-                    and not isinstance(st, range)
-                    and not isinstance(st, LambdaType)):
-                return False
-            if mt == int and isinstance(st, tuple):
-                for e in st:
-                    if not isinstance(e, int):
-                        return False
-            if (mt == str and not isinstance(st, tuple)
-                    and st not in _spsstps.keys()
-                    and not _valid_regex(st)):
-                return False
-            if mt == str and isinstance(st, tuple):
-                for e in st:
-                    if not isinstance(e, str):
-                        return False
-            return True
-        elif isinstance(_type, tuple) and len(_type) == 1:
-            mt = _type[0]
-            if mt not in _spbtps:
-                return False
-            return True
-        else:
-            return False
-
-    @staticmethod
-    def _validated(_type, data):
-        if isinstance(_type, tuple) and len(_type) == 2:
-            mt = _type[0]
-            st = _type[1]
-            if mt == int and (isinstance(st, tuple) or isinstance(st, range)):
-                return data in st
-            elif mt == int and isinstance(st, LambdaType):
-                return st(data)
-            elif mt == str and isinstance(st, tuple):
-                return data in st
-            elif mt == str and st in _spsstps.keys():
-                return _spsstps[st](data)
-            else:
-                return _regex_match(regex=st, _str=data)
-        elif isinstance(_type, tuple) and len(_type) == 1:
-            mt = _type[0]
-            return isinstance(data, mt)
-        else:
-            return False
 
     def _preproc(self, data):
         for prop in self.schema:
@@ -77,7 +59,7 @@ class SerialJ(object):
             _compound = prop[_cp] if _cp in prop else False
             _serializer = prop[_srl] if _srl in prop else None
             _schema = prop[_sch] if _sch in prop else None
-            if _type and not self._valid_type(_type):
+            if _type and not _valid_type(_type):
                 raise TypeError(_err(5, _name, _type))
             if not _optional and _name not in data:
                 raise ValueError(_err(0, _name, data))
@@ -86,7 +68,7 @@ class SerialJ(object):
                     if not _nullable:
                         raise ValueError(_err(1, _name))
                 else:
-                    if _type and not self._validated(_type, data[_name]):
+                    if _type and not _validated(_type, data[_name]):
                         raise ValueError(_err(4, _name, _type, data[_name]))
                     if (_compound and not isinstance(data[_name], list)
                             and not isinstance(data[_name], dict)):

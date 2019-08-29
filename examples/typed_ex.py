@@ -1,8 +1,10 @@
-from serial_j import SerialJ
 from uuid import UUID
 
+from serial_j import SerialJ, create_schema
+
+
 class TypedData(SerialJ):
-    schema = [
+    schema = create_schema([
         {'name': 'prop1', 'type': (int,)},
         {'name': 'prop2', 'type': (int, (1, 64, 343))},
         {'name': 'prop3', 'type': (int, range(1, 10, 3))},
@@ -17,7 +19,7 @@ class TypedData(SerialJ):
         {'name': 'prop12', 'type': (str, '[^@]+@[^@]+\.[^@]+')},
         {'name': 'prop13', 'type': (float,)},
         {'name': 'prop14', 'type': (bool,)},
-    ]
+    ])
 
 
 test1 = {
