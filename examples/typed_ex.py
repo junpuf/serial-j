@@ -31,7 +31,7 @@ test1 = {
     'prop6': 'SUCCESS',
     'prop7': 'anyone@emailservice.com',
     'prop8': 'https://www.something.com/something-something/something/12345',
-    'prop9': '172.16.255.1',
+    'prop9': '172.16.255.255',
     'prop10': '2001:0db8:0a0b:12f0:0000:0000:0000:0001',
     'prop11': UUID('c026dd66-86f2-498e-8c2c-858179c0c93d'),
     'prop12': 'junpufan@me.com',

@@ -9,38 +9,38 @@ name = "serial_j"
 
 
 def create_schema(schema=None):
-    def validate_schema(schema):
-        if schema is None or not isinstance(schema, list):
+    def validate_schema(_schema):
+        if _schema is None or not isinstance(_schema, list):
             raise TypeError(_err(7))
         else:
-            for p in schema:
+            for p in _schema:
                 if not isinstance(p, dict):
                     raise TypeError(_err(8))
                 elif _na not in p.keys():
                     raise TypeError(_err(12))
                 else:
-                    keys = p.keys()
-                    name = p.get(_na)
-                    for opt in keys:
+                    _keys = p.keys()
+                    _name = p.get(_na)
+                    for opt in _keys:
                         if opt not in _spopts:
                             raise TypeError(_err(9, opt))
                         elif opt == _tp and not _valid_type(p.get(_tp)):
                             raise TypeError(_err(10, p.get(_tp)))
                         elif opt == _cp and p.get(_cp):
-                            if not _srl in keys and not _sch in keys:
+                            if _srl not in _keys and _sch not in _keys:
                                 raise TypeError(_err(11))
-                            elif _srl in keys and _sch in keys:
+                            elif _srl in _keys and _sch in _keys:
                                 raise TypeError(_err(13))
-                            elif _srl in keys:
+                            elif _srl in _keys:
                                 validate_schema(p.get(_srl).schema)
-                            elif _sch in keys:
+                            elif _sch in _keys:
                                 validate_schema(p.get(_sch))
                         elif opt == _opt and not isinstance(p.get(_opt), bool):
                             raise TypeError(
-                                _err(14, _name=name, opt=_opt, _type=bool))
+                                _err(14, _name=_name, opt=_opt, _type=bool))
                         elif opt == _nu and not isinstance(p.get(_nu), bool):
                             raise TypeError(
-                                _err(14, _name=name, opt=_nu, _type=bool))
+                                _err(14, _name=_name, opt=_nu, _type=bool))
 
     validate_schema(schema)
     return schema

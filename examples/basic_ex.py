@@ -1,20 +1,22 @@
-from serial_j import SerialJ
+from serial_j import SerialJ, create_schema
 
 
 class FruitBucket(SerialJ):
     # define how our data should look like using `schema`.
-    schema = [
+    schema = create_schema([
         {'name': 'apple'},
         {'name': 'orange'},
         {'name': 'pineapple'},
-    ]
-
+    ])
 
 # test data for FruitBucket
 test1 = dict(
     apple="good apple",
     orange="very good orange",
     pineapple="nice pineapple",
+    data1="asdsada",
+data2="asdsada",data4="asdsada",data5="asdsada",
+
 )
 
 # serialize `test1` into `FruitBucket` object
