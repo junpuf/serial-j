@@ -1,7 +1,7 @@
-[![https://github.com/JunpuFan/serial-j](https://github.com/JunpuFan/serial-j/static/blob/master/logo.png)](https://github.com/JunpuFan/serial-j)
+[![https://github.com/JunpuFan/serial-j](https://github.com/junpuf/serial-j/blob/master/static/logo.png)](https://github.com/JunpuFan/serial-j)
 
 <p align="center">
-  <img width="620" height="422" src="https://github.com/JunpuFan/serial-j/static/blob/master/demo1.gif">
+  <img width="620" height="422" src="https://github.com/junpuf/serial-j/blob/master/static/demo1.gif">
 </p>
 
 ## Features 
